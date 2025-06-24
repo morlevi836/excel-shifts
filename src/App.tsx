@@ -44,9 +44,9 @@ function App() {
   return (
     <div
       dir="rtl"
-      className="relative mx-auto flex min-h-screen w-full max-w-4xl flex-col items-center bg-white px-4 py-10 text-right text-black dark:bg-zinc-900 dark:text-white"
+      className="relative flex min-h-screen w-full flex-col bg-white px-4 py-6 text-right text-black sm:px-8 md:px-12 lg:px-16 dark:bg-zinc-900 dark:text-white"
     >
-      <div className="w-full">
+      <div className="mx-auto w-1/2 max-sm:mx-0 max-sm:w-full">
         <ThemeToggle />
 
         {/* Header */}
@@ -136,11 +136,13 @@ function App() {
       </div>
 
       {/* Table */}
-      <ShiftTable
-        people={people}
-        todayShiftIds={todayShift}
-        yesterdayShiftIds={yesterdayShift}
-      />
+      <div className="mt-6 w-full overflow-x-auto">
+        <ShiftTable
+          people={people}
+          todayShiftIds={todayShift}
+          yesterdayShiftIds={yesterdayShift}
+        />
+      </div>
 
       {/* Floating Download Button */}
       <Button
