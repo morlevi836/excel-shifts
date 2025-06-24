@@ -24,7 +24,7 @@ export function ThemeToggle() {
         <Button
           onClick={toggleTheme}
           variant="ghost"
-          className="hover:bg-muted hover:text-primary absolute top-4 left-4 cursor-pointer rounded-full p-2 transition-colors"
+          className="hover:bg-muted hover:text-primary fixed top-4 left-4 cursor-pointer rounded-full p-2 transition-colors"
           aria-label={dark ? "העבר למצב בהיר" : "העבר למצב כהה"}
         >
           <span className="sr-only">Toggle theme</span>

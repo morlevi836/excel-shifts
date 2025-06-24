@@ -44,18 +44,19 @@ function App() {
   return (
     <div
       dir="rtl"
-      className="relative mx-auto flex min-h-screen w-[95%] flex-col items-center bg-white px-4 py-10 text-right text-black dark:bg-zinc-900 dark:text-white"
+      className="relative mx-auto flex min-h-screen w-full max-w-4xl flex-col items-center bg-white px-4 py-10 text-right text-black dark:bg-zinc-900 dark:text-white"
     >
-      <div className="w-1/2">
+      <div className="w-full">
         <ThemeToggle />
 
-        <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-3xl font-bold">בחירת משמרות</h1>
+        {/* Header */}
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+          <h1 className="text-2xl font-bold sm:text-3xl">בחירת משמרות</h1>
 
-          <div className="flex items-center justify-end gap-4">
+          <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-4">
             <Button
               onClick={toggleShiftTime}
-              className="bg-primary text-primary-foreground hover:bg-primary/80 focus:ring-primary cursor-pointer rounded-full px-6 py-2 text-sm font-semibold shadow-md transition focus:ring-2 focus:ring-offset-2 focus:outline-none"
+              className="bg-primary text-primary-foreground hover:bg-primary/80 focus:ring-primary rounded-full px-6 py-2 text-sm font-semibold shadow-md transition focus:ring-2 focus:ring-offset-2 focus:outline-none"
             >
               משמרת {shiftTime}
             </Button>
@@ -80,8 +81,8 @@ function App() {
           disabledValues={yesterdayShift.map(String)}
         />
 
-        <div className="mb-6 grid grid-cols-2 gap-4">
-          {/* Yesterday Shift Summary */}
+        {/* Shift Summary Cards */}
+        <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="bg-muted text-muted-foreground relative rounded-xl border p-4 shadow-sm dark:border-zinc-700">
             <div className="flex items-center justify-between">
               <div>
@@ -107,7 +108,6 @@ function App() {
             </div>
           </div>
 
-          {/* Today Shift Summary */}
           <div className="bg-secondary text-secondary-foreground relative rounded-xl border p-4 shadow-sm dark:border-zinc-700">
             <div className="flex items-center justify-between">
               <div>
@@ -135,12 +135,14 @@ function App() {
         </div>
       </div>
 
+      {/* Table */}
       <ShiftTable
         people={people}
         todayShiftIds={todayShift}
         yesterdayShiftIds={yesterdayShift}
       />
 
+      {/* Floating Download Button */}
       <Button
         onClick={handleDownload}
         className="bg-primary text-primary-foreground hover:bg-primary/90 fixed bottom-4 left-4 z-50 flex cursor-pointer items-center gap-2 rounded-full px-4 py-2 text-sm font-medium shadow-lg transition"
