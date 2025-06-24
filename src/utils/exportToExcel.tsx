@@ -1,10 +1,13 @@
 import * as XLSX from "xlsx";
 import type { Person } from "@/types/Person";
+import moment from "moment";
 
 export function exportShifts(
   allPeople: Person[],
   today: Person[],
   yesterday: Person[],
+  shiftTime: "בוקר" | "ערב",
+  date: Date,
 ) {
   const shiftMap = new Map<number, string>();
   today.forEach((p) => shiftMap.set(p.id, "משמרת היום"));
@@ -25,14 +28,17 @@ export function exportShifts(
   });
 
   ws["!cols"] = [
-    { wch: 20 }, // שם
-    { wch: 15 }, // תעודת זהות
-    { wch: 15 }, // טלפון
-    { wch: 30 }, // כתובת
-    { wch: 25 }, // אימייל
-    { wch: 15 }, // משמרת
+    { wch: 15 },
+    { wch: 15 },
+    { wch: 15 },
+    { wch: 25 },
+    { wch: 30 },
+    { wch: 15 },
   ];
 
   XLSX.utils.book_append_sheet(wb, ws, "משמרות");
-  XLSX.writeFile(wb, "משמרות.xlsx");
+  XLSX.writeFile(
+    wb,
+    `דמח - משמרת ${shiftTime} ${moment(date).format("DD-MM-YYYY")}.xlsx`,
+  );
 }

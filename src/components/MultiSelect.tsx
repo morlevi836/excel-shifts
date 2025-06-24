@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Check } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Command,
@@ -7,12 +7,15 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  CommandEmpty,
 } from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 type Option = {
   label: string;
@@ -31,7 +34,7 @@ export function MultiSelect({
   options,
   value,
   onValueChange,
-  placeholder = "בחר עובדים...",
+  placeholder = "בחר חיילים...",
   disabledValues = [],
 }: MultiSelectProps) {
   const [open, setOpen] = React.useState(false);
@@ -44,47 +47,100 @@ export function MultiSelect({
     }
   };
 
+  const selectAll = () => {
+    const filtered = options
+      .filter((o) => !disabledValues.includes(o.value))
+      .map((o) => o.value);
+    onValueChange(filtered);
+  };
+
+  const clearAll = () => {
+    onValueChange([]);
+  };
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
         className={cn(
-          "focus:ring-primary w-full rounded-md border bg-white px-3 py-2 text-right shadow-sm focus:ring-2 focus:ring-offset-1 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-white",
-          "flex min-h-[40px] cursor-pointer flex-wrap items-center gap-1",
-          value.length === 0 && "text-gray-400 dark:text-gray-500",
+          "focus:ring-primary w-full rounded-md border bg-white px-3 py-2 text-right shadow-sm transition focus:ring-2 focus:ring-offset-1 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-white",
+          "min-h-[40px] cursor-pointer text-sm",
         )}
       >
-        {value.length === 0
-          ? placeholder
-          : value
-              .map((val) => options.find((o) => o.value === val)?.label)
-              .filter(Boolean)
-              .join(", ")}
+        <div className="flex flex-wrap items-center gap-1">
+          {value.length === 0 ? (
+            <span className="text-muted-foreground">{placeholder}</span>
+          ) : (
+            value.map((val) => {
+              const label = options.find((o) => o.value === val)?.label;
+              return (
+                <Badge
+                  key={val}
+                  variant="secondary"
+                  className="flex cursor-pointer items-center gap-1 transition hover:opacity-80"
+                  onClick={(e) => {
+                    e.stopPropagation(); // prevent popover from toggling
+                    toggleOption(val);
+                  }}
+                >
+                  {label}
+                  <X className="h-3 w-3" />
+                </Badge>
+              );
+            })
+          )}
+        </div>
       </PopoverTrigger>
-      <PopoverContent className="rtl w-full p-0 text-right">
+
+      <PopoverContent className="w-full p-0 text-right">
         <Command>
-          <CommandInput placeholder="הקלד כדי לחפש..." />
+          <div className="flex items-center justify-between px-2 pt-2">
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={selectAll}
+              className="text-xs"
+            >
+              בחר הכל
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={clearAll}
+              className="text-xs"
+            >
+              אפס הכל
+            </Button>
+          </div>
+          <CommandInput
+            placeholder="הקלד כדי לחפש..."
+            className="mx-2 mt-2 text-sm"
+          />
+          <CommandEmpty className="text-muted-foreground p-2 text-sm">
+            לא נמצאו תוצאות
+          </CommandEmpty>
           <CommandList>
             <CommandGroup>
               {options.map((option) => {
-                const disabled = disabledValues.includes(option.value);
+                const isSelected = value.includes(option.value);
+                const isDisabled = disabledValues.includes(option.value);
+
                 return (
                   <CommandItem
                     key={option.value}
                     onSelect={() => {
-                      if (!disabled) toggleOption(option.value);
+                      if (!isDisabled) toggleOption(option.value);
                     }}
                     className={cn(
                       "cursor-pointer",
-                      disabled ? "pointer-events-none opacity-40" : "",
+                      isDisabled ? "pointer-events-none opacity-40" : "",
                     )}
                   >
                     <div
                       className={cn(
-                        "border-primary ml-2 flex h-4 w-4 items-center justify-center rounded-sm border",
-                        value.includes(option.value)
+                        "border-primary ml-2 flex h-4 w-4 items-center justify-center rounded-sm border transition",
+                        isSelected
                           ? "bg-primary text-primary-foreground"
                           : "opacity-50 [&_svg]:invisible",
-                        disabled ? "opacity-40" : "",
                       )}
                     >
                       <Check className="h-4 w-4" />
