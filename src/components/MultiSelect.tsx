@@ -120,7 +120,10 @@ export function MultiSelect({
           </CommandEmpty>
           <CommandList>
             <CommandGroup>
-              {options.map((option) => {
+              {[
+                ...options.filter((o) => !disabledValues.includes(o.value)), // enabled first
+                ...options.filter((o) => disabledValues.includes(o.value)), // then disabled
+              ].map((option) => {
                 const isSelected = value.includes(option.value);
                 const isDisabled = disabledValues.includes(option.value);
 

@@ -7,6 +7,13 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { Download } from "lucide-react";
 import { DatePicker } from "./components/DatePicker";
 import { Button } from "./components/ui/button";
+import { toast } from "sonner";
+import { RotateCcw } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 function App() {
   const [todayShift, setTodayShift] = React.useState<number[]>([]);
@@ -24,8 +31,10 @@ function App() {
       people.filter((p) => todayShift.includes(p.id)),
       people.filter((p) => yesterdayShift.includes(p.id)),
       shiftTime,
-      selectedDate, // 👈 new
+      selectedDate,
     );
+
+    toast.success("קובץ האקסל נוצר בהצלחה!");
   };
 
   const toggleShiftTime = () => {
@@ -56,20 +65,74 @@ function App() {
         </div>
 
         <ShiftSelector
-          label="משמרת נוכחית"
-          people={people}
-          selected={todayShift}
-          setSelected={setTodayShift}
-          disabledValues={yesterdayShift.map(String)}
-        />
-
-        <ShiftSelector
           label="משמרת יוצאת"
           people={people}
           selected={yesterdayShift}
           setSelected={setYesterdayShift}
           disabledValues={todayShift.map(String)}
         />
+
+        <ShiftSelector
+          label="משמרת נכנסת"
+          people={people}
+          selected={todayShift}
+          setSelected={setTodayShift}
+          disabledValues={yesterdayShift.map(String)}
+        />
+
+        <div className="mb-6 grid grid-cols-2 gap-4">
+          {/* Yesterday Shift Summary */}
+          <div className="bg-muted text-muted-foreground relative rounded-xl border p-4 shadow-sm dark:border-zinc-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="mb-1 font-semibold">משמרת יוצאת</h4>
+                <p>{yesterdayShift.length} עובדים נבחרו</p>
+              </div>
+
+              {yesterdayShift.length > 0 && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="text-muted-foreground hover:text-destructive transition"
+                      onClick={() => setYesterdayShift([])}
+                    >
+                      <RotateCcw className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>איפוס משמרת יוצאת</TooltipContent>
+                </Tooltip>
+              )}
+            </div>
+          </div>
+
+          {/* Today Shift Summary */}
+          <div className="bg-secondary text-secondary-foreground relative rounded-xl border p-4 shadow-sm dark:border-zinc-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="mb-1 font-semibold">משמרת נכנסת</h4>
+                <p>{todayShift.length} עובדים נבחרו</p>
+              </div>
+
+              {todayShift.length > 0 && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="text-muted-foreground hover:text-destructive transition"
+                      onClick={() => setTodayShift([])}
+                    >
+                      <RotateCcw className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>איפוס משמרת נכנסת</TooltipContent>
+                </Tooltip>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
 
       <ShiftTable

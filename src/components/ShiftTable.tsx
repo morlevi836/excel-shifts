@@ -47,9 +47,9 @@ export function ShiftTable({
         <tbody>
           {people.map((person) => {
             let shift = "ללא משמרת";
-            if (todayShiftIds.includes(person.id)) shift = "משמרת היום";
+            if (todayShiftIds.includes(person.id)) shift = "משמרת נכנסת";
             else if (yesterdayShiftIds.includes(person.id))
-              shift = "משמרת אתמול";
+              shift = "משמרת יוצאת";
 
             return (
               <tr
